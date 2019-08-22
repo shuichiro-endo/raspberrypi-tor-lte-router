@@ -1,0 +1,11 @@
+User tor
+Log notice stdout
+DataDirectory /var/lib/tor
+VirtualAddrNetwork 172.16.0.0/12
+AutomapHostsSuffixes .onion,.exit
+AutomapHostsOnResolve 1
+TransPort 0.0.0.0:9040
+SocksPort 0.0.0.0:9150
+ExcludeNodes SlowServer,{jp},{gb},{us},{ca},{au},{nz}
+#ExcludeExitNodes 
+StrictNodes 1
