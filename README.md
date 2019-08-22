@@ -6,7 +6,6 @@
 - Packet Flow
     - Virtual Machine <=> Raspberry Pi
         - TCP Packet
-            - USB Ethernet Adapter <= TCP => eth0 TCP <= redirect => eth0 TCP9040(tor transport)
             - USB Ethernet Adapter <= TCP => eth0 TCP9150(tor socksport)
         - DNS Packet
             - USB Ethernet Adapter <= DNS => eth0 UDP53 <= redirect => eth0 UDP5053(cloudflared)
@@ -366,7 +365,7 @@
         # INPUT eth0
         -A INPUT -i eth0 -d 192.168.1.1 -m multiport -p udp --dports 5053 -j ACCEPT
         -A INPUT -i eth0 -d 192.168.1.1 -p udp --dport 67 -j ACCEPT
-        -A INPUT -i eth0 -m multiport -p tcp --dports 9040,9150 -j ACCEPT
+        -A INPUT -i eth0 -m multiport -p tcp --dports 9150 -j ACCEPT
         -A INPUT -i eth0 -j DROP
 
         # INPUT ppp0
@@ -395,10 +394,6 @@
         :OUTPUT ACCEPT [0:0]
 
         -A PREROUTING -i eth0 -d 192.168.1.1 -p udp --dport 53 -j REDIRECT --to-ports 5053
-        -A PREROUTING -i eth0 ! -d 192.168.1.1 -p tcp --dport 443 --syn -j REDIRECT --to-ports 9040
-        #-A PREROUTING -i eth0 ! -d 192.168.1.1 -p tcp --dport 443 --syn -j REDIRECT --to-ports 9150
-        #-A PREROUTING -i eth0 ! -d 192.168.1.1 -p tcp --syn -j REDIRECT --to-ports 9040
-        #-A PREROUTING -i eth0 ! -d 192.168.1.1 -p tcp --syn -j REDIRECT --to-ports 9150
 
         COMMIT
 
@@ -500,7 +495,7 @@
     ````
 - Run tor on docker
     ````
-    sudo docker run -d --name tor -p 192.168.1.1:9040:9040 -p 192.168.1.1:9150:9150 tor:latest
+    sudo docker run -d --name tor -p 192.168.1.1:9150:9150 tor:latest
     sudo docker ps -a
     ````
 - Run toCloudflare.service
